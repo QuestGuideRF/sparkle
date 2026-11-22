@@ -1,0 +1,71 @@
+import { Loader2, Menu, Minus, Square, X } from "lucide-react"
+import { close, minimize, toggleMaximize } from "../lib/electron"
+import sparkleLogo from "../../../../resources/sparklelogo.png"
+import Card from "./ui/Card"
+import useAppInstallStore from "@/store/appInstallStore"
+interface TitleBarProps {
+  onToggleSidebar: () => void
+  sidebarCollapsed: boolean
+}
+function TitleBar({
+  onToggleSidebar,
+  sidebarCollapsed: _sidebarCollapsed,
+}: TitleBarProps): React.ReactElement {
+  const { apps, action } = useAppInstallStore()
+  const actionText = action === "uninstall" ? "Uninstalling" : "Installing"
+  return (
+    <div
+      style={{ WebkitAppRegion: "drag" } as any}
+      className="h-[50px] fixed top-0 left-0 right-0 flex justify-between items-center pl-4 bg-sparkle-bg z-50"
+    >
+      <div className="гибкие элементы-центральный разрыв-3 h-полный пр-4">
+        <button
+          onClick={onToggleSidebar}
+          className="h-7 w-7 inline-flex items-center justify-center text-sparkle-text-вторичный hover:bg-sparkle-accent переходные цвета округленные"
+          style={{ WebkitAppRegion: "no-drag" } as any}
+        >
+          <Menu size={16} />
+        </button>
+        <img src={sparkleLogo} alt="Sparkle" className="ч-5 ж-5" />
+        <span className="text-sparkle-text text-sm шрифт-средний">Sparkle</span>
+        <div className="bg-sparkle-card border border-sparkle-border-вторичный p-1 округлый-xl w-16 text-center text-sm text-sparkle-text">
+          Beta
+        </div>
+      </div>
+      <div>
+        {apps.length > 0 && (
+          <Card
+            key="install-status"
+            className="p-2 text-xs flex items-center промежуток-2 анимация плавное увеличение продолжительность масштабирования-300 режим заполнения-оба"
+          >
+            <Loader2 className="анимация-спин текст-xs w-4 h-4" />
+            {apps.length === 1
+              ? `${actionText} ${apps[0].name}`
+              : `${actionText} ${apps.length} приложений`}
+          </Card>
+        )}
+      </div>
+      <div className="flex" style={{ WebkitAppRegion: "no-drag" } as any}>
+        <button
+          onClick={minimize}
+          className="h-[50px] w-12 inline-flex items-center justify-center text-sparkle-text-вторичный hover:bg-sparkle-accent переходные цвета"
+        >
+          <Minus size={16} />
+        </button>
+        <button
+          onClick={toggleMaximize}
+          className="h-[50px] w-12 inline-flex items-center justify-center text-sparkle-text-вторичный hover:bg-sparkle-accent переходные цвета"
+        >
+          <Square size={14} />
+        </button>
+        <button
+          onClick={close}
+          className="h-[50px] w-12 inline-flex items-center justify-center text-sparkle-text-вторичный hover:bg-red-600 hover:text-white переходные цвета"
+        >
+          <X size={16} />
+        </button>
+      </div>
+    </div>
+  )
+}
+export default TitleBar
